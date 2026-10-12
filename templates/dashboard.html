@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Calcule seu Índice de Massa Corporal."><title>Calculadora de IMC</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="{{ url_for('dashboard') }}"><span class="brand-mark small" aria-hidden="true">IMC</span> Calculadora de IMC</a>
+    <div class="user-actions"><span class="user-label">Olá, {{ username }}</span>
+      <form method="post" action="{{ url_for('logout') }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="button button-quiet" type="submit">Sair</button></form>
+    </div>
+  </header>
+  <main class="container">
+    <section class="intro"><p class="eyebrow">FERRAMENTA DE BEM-ESTAR</p><h1>Calculadora de IMC</h1><p class="muted">Informe seu peso e sua altura para calcular o Índice de Massa Corporal.</p></section>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, message in messages %}<div class="alert alert-{{ category }}" role="alert">{{ message }}</div>{% endfor %}
+    {% endwith %}
+    <section class="calculator-card">
+      <div class="calculator-heading"><div><h2>Seus dados</h2><p class="muted">Os valores são processados pela aplicação e não são armazenados em banco de dados.</p></div><span class="icon-circle" aria-hidden="true">↗</span></div>
+      <form method="post" action="{{ url_for('calculate') }}" class="calculator-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="form-grid">
+          <div><label for="weight">Peso (kg)</label><input id="weight" name="weight" type="number" min="0.1" max="500" step="0.1" placeholder="Ex.: 72,5" required inputmode="decimal"></div>
+          <div><label for="height">Altura (m)</label><input id="height" name="height" type="number" min="0.1" max="3" step="0.01" placeholder="Ex.: 1,75" required inputmode="decimal"></div>
+        </div>
+        <button class="button button-primary" type="submit">Calcular IMC <span aria-hidden="true">→</span></button>
+      </form>
+      {% if result %}<section class="result-panel" aria-live="polite" aria-labelledby="result-title"><p class="eyebrow">SEU RESULTADO</p><h2 id="result-title">{{ result.bmi }}</h2><p class="result-label">{{ result.classification }}</p><p class="muted small-text">O IMC é uma medida de triagem e não substitui avaliação individual de um profissional de saúde.</p><a class="text-link" href="{{ url_for('dashboard') }}">Refazer cálculo</a></section>{% endif %}
+    </section>
+    <section class="reference-card"><h2>Faixas de classificação</h2><p class="muted">Faixas reproduzidas da Secretaria de Estado de Saúde do Rio de Janeiro.</p>
+      <div class="table-wrap"><table><thead><tr><th>IMC</th><th>Classificação</th></tr></thead><tbody>
+        <tr><td>Abaixo de 17</td><td>Muito abaixo do peso</td></tr><tr><td>17 a 18,49</td><td>Abaixo do peso</td></tr><tr><td>18,5 a 24,99</td><td>Peso normal</td></tr><tr><td>25 a 29,99</td><td>Acima do peso</td></tr><tr><td>30 a 34,99</td><td>Obesidade I</td></tr><tr><td>35 a 39,99</td><td>Obesidade II (severa)</td></tr><tr><td>40 ou mais</td><td>Obesidade III (mórbida)</td></tr>
+      </tbody></table></div>
+      <p class="source-note">Fonte: <a href="https://www.saude.rj.gov.br/obesidade/calcule-seu-imc" target="_blank" rel="noopener noreferrer">Secretaria de Estado de Saúde do Rio de Janeiro — Calcule seu IMC</a>.</p>
+    </section>
+    <footer>Calculadora de IMC</footer>
+  </main>
+</body></html>

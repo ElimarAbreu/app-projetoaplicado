@@ -1,0 +1,21 @@
+[Unit]
+Description=SecureOps Lab Flask application
+After=network.target
+
+[Service]
+Type=simple
+User=secureops
+Group=secureops
+WorkingDirectory=/opt/secureops-lab
+EnvironmentFile=/etc/secureops-lab/secureops.env
+ExecStart=/opt/secureops-lab/.venv/bin/gunicorn --workers 2 --bind 127.0.0.1:8000 --access-logfile - --error-logfile - app:app
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/secureops-lab /var/lib/secureops-lab
+
+[Install]
+WantedBy=multi-user.target

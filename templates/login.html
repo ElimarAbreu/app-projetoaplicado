@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Entre para acessar a Calculadora de IMC."><title>Entrar | Calculadora de IMC</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="auth-page">
+  <main class="auth-card">
+    <div class="brand-mark" aria-hidden="true">IMC</div>
+    <p class="eyebrow">CALCULADORA DE IMC</p>
+    <h1>Acesse sua conta</h1>
+    <p class="muted">Entre com seu e-mail e sua senha para acessar a calculadora de IMC.</p>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, message in messages %}<div class="alert alert-{{ category }}" role="alert">{{ message }}</div>{% endfor %}
+    {% endwith %}
+    <form method="post" action="{{ url_for('login') }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <label for="email">E-mail</label><input id="email" name="email" type="email" autocomplete="email" maxlength="254" value="{{ email }}" required>
+      <label for="password">Senha</label><input id="password" name="password" type="password" autocomplete="current-password" required>
+      <button class="button button-primary button-full" type="submit">Entrar</button>
+    </form>
+    <p class="auth-switch">Ainda não tem conta? <a href="{{ url_for('register') }}">Criar uma conta</a></p>
+  </main>
+</body></html>

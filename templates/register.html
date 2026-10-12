@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Crie sua conta para usar a Calculadora de IMC."><title>Criar conta | Calculadora de IMC</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="auth-page">
+  <main class="auth-card">
+    <div class="brand-mark" aria-hidden="true">IMC</div>
+    <p class="eyebrow">CALCULADORA DE IMC</p>
+    <h1>Crie sua conta</h1>
+    <p class="muted">Preencha os dados abaixo para começar a usar a calculadora de IMC.</p>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, message in messages %}<div class="alert alert-{{ category }}" role="alert">{{ message }}</div>{% endfor %}
+    {% endwith %}
+    <form method="post" action="{{ url_for('register') }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <label for="name">Nome</label><input id="name" name="name" type="text" autocomplete="name" minlength="2" maxlength="80" value="{{ name }}" required>
+      <label for="email">E-mail</label><input id="email" name="email" type="email" autocomplete="email" maxlength="254" value="{{ email }}" required>
+      <label for="password">Senha</label><input id="password" name="password" type="password" autocomplete="new-password" minlength="12" maxlength="128" pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9]).{12,128}" aria-describedby="password-help" title="Use de 12 a 128 caracteres, com letra maiúscula, letra minúscula, número e símbolo." required>
+      <p id="password-help" class="muted password-help">Use de 12 a 128 caracteres, incluindo letra maiúscula, letra minúscula, número e símbolo (por exemplo: @, # ou !).</p>
+      <label for="confirm_password">Confirme a senha</label><input id="confirm_password" name="confirm_password" type="password" autocomplete="new-password" minlength="12" maxlength="128" required>
+      <button class="button button-primary button-full" type="submit">Criar conta</button>
+    </form>
+    <p class="auth-switch">Já tem uma conta? <a href="{{ url_for('login') }}">Entrar</a></p>
+  </main>
+</body></html>
