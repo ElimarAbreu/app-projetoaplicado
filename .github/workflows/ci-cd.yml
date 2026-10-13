@@ -34,6 +34,11 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     steps:
+      - name: Instalar rsync
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y rsync
+
       - name: Baixar código
         uses: actions/checkout@v4
       - name: Configurar SSH e host confiável
