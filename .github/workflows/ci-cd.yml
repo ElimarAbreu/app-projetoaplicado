@@ -38,7 +38,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y rsync
-	  command -v rsync
+          command -v rsync
           rsync --version
 
       - name: Baixar código
