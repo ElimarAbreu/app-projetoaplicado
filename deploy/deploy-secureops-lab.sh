@@ -14,6 +14,14 @@ if [[ ! -x "${APP_DIR}/.venv/bin/python" ]]; then runuser -u secureops -- python
 runuser -u secureops -- "${APP_DIR}/.venv/bin/python" -m pip install --disable-pip-version-check --upgrade pip
 runuser -u secureops -- "${APP_DIR}/.venv/bin/python" -m pip install --disable-pip-version-check -r "${APP_DIR}/requirements.txt"
 systemctl daemon-reload; systemctl restart secureops-lab
+[[ -s "${STAGING}/deploy/configure-nginx-imc.py" ]] || {
+  echo "Configurador Nginx ausente ou vazio no staging." >&2
+  exit 1
+}
+
+install -o root -g root -m 0755 \
+  "${STAGING}/deploy/configure-nginx-imc.py" \
+  /usr/local/sbin/configure-nginx-imc
 healthy=0
 for attempt in $(seq 1 20); do if curl --silent --fail --max-time 2 http://127.0.0.1:8000/login >/dev/null 2>&1; then healthy=1; break; fi; sleep 2; done
 if [[ "$healthy" != 1 ]]; then echo "Aplicação não respondeu em 127.0.0.1:8000; Nginx não será alterado." >&2; systemctl --no-pager --full status secureops-lab || true; journalctl -u secureops-lab -n 80 --no-pager || true; exit 1; fi
