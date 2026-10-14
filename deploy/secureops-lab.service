@@ -1,5 +1,5 @@
 [Unit]
-Description=SecureOps Lab Flask application
+Description=Calculadora de IMC Flask application
 After=network.target
 
 [Service]
@@ -8,6 +8,7 @@ User=secureops
 Group=secureops
 WorkingDirectory=/opt/secureops-lab
 EnvironmentFile=/etc/secureops-lab/secureops.env
+Environment=PYTHONUNBUFFERED=1
 ExecStart=/opt/secureops-lab/.venv/bin/gunicorn --workers 2 --bind 127.0.0.1:8000 --access-logfile - --error-logfile - app:app
 Restart=on-failure
 RestartSec=5

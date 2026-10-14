@@ -1,4 +1,4 @@
-name: SecureOps Lab CI/CD
+name: Calculadora de IMC CI/CD
 on:
   push:
     branches: [main]
@@ -35,12 +35,7 @@ jobs:
     environment: production
     steps:
       - name: Instalar rsync
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y rsync
-          command -v rsync
-          rsync --version
-
+        run: sudo apt-get update && sudo apt-get install -y rsync
       - name: Baixar código
         uses: actions/checkout@v4
       - name: Configurar SSH e host confiável
@@ -48,6 +43,8 @@ jobs:
           DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
           DEPLOY_KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
         run: |
+          test -n "$DEPLOY_SSH_KEY"
+          test -n "$DEPLOY_KNOWN_HOSTS"
           install -m 700 -d ~/.ssh
           printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
@@ -61,7 +58,7 @@ jobs:
           test -n "$DEPLOY_HOST"
           test -n "$DEPLOY_USER"
           rsync -az --delete --exclude='.git/' --exclude='.env' --exclude='.venv/' --exclude='__pycache__/' --exclude='.pytest_cache/' ./ "${DEPLOY_USER}@${DEPLOY_HOST}:secureops-lab-staging/"
-      - name: Instalar versão e reiniciar serviço
+      - name: Implantar aplicação e configurar proxy HTTPS
         env:
           DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
           DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
